@@ -11,9 +11,7 @@ const isDebug = false;
     'wss://nos.lol/',
     'wss://relay.damus.io/',
     'wss://relay.nostr.wirednet.jp/',
-    'wss://relay-jp.nostr.wirednet.jp/',
     'wss://yabu.me/',
-    'wss://r.kojira.io/',
   ];
 
   const relaysToWrite = [
@@ -132,7 +130,9 @@ const isDebug = false;
   const main = async () => {
     console.info('[start]');
     const NOSTR_PRIVATE_KEY: string = process.env.NOSTR_PRIVATE_KEY ?? '';
-    const events: NostrEvent[] = await getWebBookmarks(new SimplePool(), relaysToFetch);
+    const pool: SimplePool = new SimplePool();
+    pool.trackRelays = true;
+    const events: NostrEvent[] = await getWebBookmarks(pool, relaysToFetch);
     const urls: string[] = events
       .map((ev) => ev.tags.find((tag) => tag.length >= 2 && tag[0] === 'd')?.at(1))
       .filter((ev) => ev !== undefined)
@@ -141,6 +141,15 @@ const isDebug = false;
       console.info('0件でした');
       process.exit(0);
     }
+    const relaysConnected: string[] = Array.from(
+      new Set<string>(
+        Array.from(pool.seenOn.values())
+          .map((set) => Array.from(set))
+          .flat()
+          .map((r) => r.url),
+      ),
+    );
+    console.info(`応答リレー:\n${relaysConnected.join('\n')}\n`);
     const ranking = new Map<string, number>();
     for (const url of urls) {
       if (ranking.has(url)) {
