@@ -14,13 +14,7 @@ const isDebug = false;
     'wss://yabu.me/',
   ];
 
-  const relaysToWrite = [
-    'wss://relay.nostr.wirednet.jp/',
-    'wss://nrelay.c-stellar.net/',
-    'wss://r.bitcoinhold.net/',
-    'wss://nostr.ittanmo.men/',
-    'wss://n3r.xyz/',
-  ];
+  const relaysToWrite = ['wss://relay.nostr.wirednet.jp/', 'wss://nrelay.c-stellar.net/', 'wss://r.bitcoinhold.net/'];
 
   const now = new Date();
   const until = Math.floor(new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000) + 15 * 60 * 60;
