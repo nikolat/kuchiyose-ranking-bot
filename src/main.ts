@@ -23,7 +23,7 @@ const isDebug = false;
   const getAddressableEvents = (
     pool: SimplePool,
     relays: string[],
-    filters: Filter[],
+    filter: Filter,
     callbackEvent: (ev: NostrEvent) => void = () => {},
     autoClose: boolean = true,
   ): Promise<NostrEvent[]> => {
@@ -49,7 +49,7 @@ const isDebug = false;
         }
         resolve(Array.from(eventMap.values()));
       };
-      const sub: SubCloser = pool.subscribeMany(relays, filters, {
+      const sub: SubCloser = pool.subscribeMany(relays, filter, {
         onevent,
         oneose,
       });
@@ -57,7 +57,7 @@ const isDebug = false;
   };
 
   const getWebBookmarks = async (pool: SimplePool, relays: string[]): Promise<NostrEvent[]> => {
-    const reactionEventsFetched = await getAddressableEvents(pool, relays, [{ kinds: [39701], since, until }]);
+    const reactionEventsFetched = await getAddressableEvents(pool, relays, { kinds: [39701], since, until });
     return reactionEventsFetched.filter(isValidWebBookmark);
   };
 
